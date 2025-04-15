@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import './FindMovie.scss';
 import { Movie } from '../../types/Movie';
 import { getMovie } from '../../api';
@@ -11,6 +11,7 @@ export const FindMovie: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [preview, setPreview] = useState<Movie | null>(null);
   const [movies, setMovies] = useState<Movie[]>([]);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const normalizeMovieData = (data: MovieData): Movie => {
     return {
@@ -67,13 +68,17 @@ export const FindMovie: React.FC = () => {
       setMovies([...movies, preview]);
     }
 
+    if (formRef.current) {
+      formRef.current.reset();
+    }
+
     setTitle('');
     setPreview(null);
   };
 
   return (
     <>
-      <form className="find-movie" onSubmit={handleSubmit}>
+      <form ref={formRef} className="find-movie" onSubmit={handleSubmit}>
         <div className="field">
           <label className="label" htmlFor="movie-title">
             Movie title
